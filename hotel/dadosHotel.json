@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "nome": "Crystal Palace",
+    "preco": "250",
+    "descricao": "BLABLABLA"
+  },
+  {
+    "id": 2,
+    "nome": "Copacabana Palace",
+    "preco": "500",
+    "descricao": "BLABLABLA"
+  }
+]

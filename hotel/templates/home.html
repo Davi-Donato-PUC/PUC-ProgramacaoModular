@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <title>Hoteis</title>
+</head>
+<body>
+    
+
+    {% for resultado in pesquisa  %}
+        <div class="hotelBox">
+            <div class="hotelNome" > {{resultado.nome}} </div>
+            <div class="hotelPreco" > {{resultado.preco }}</div>
+            <div class="hoteDescricao" > {{resultado.descricao }}</div>
+        </div>
+    {% endfor %}
+
+</body>
+</html>
