@@ -4,6 +4,8 @@ from reserva.reserva import *
 from hotel.hotel import *
 
 def reservasView(request) :
+    if 'usuario' not in request.session :
+        return redirect('/login/')
     reservas = listar_reservas_por_usuario(request.session['usuario']['id'])
     ids = obterIdHoteisReservados(reservas)
     hoteis = obterHoteisPorIds(ids)

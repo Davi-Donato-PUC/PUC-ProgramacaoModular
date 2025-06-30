@@ -131,3 +131,44 @@ button {
     color: black;
 
 }
+
+
+
+#central {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+
+
+}
+
+#loginBox {
+    border: 1px solid black;
+    height: 400px; width: 600px;
+    display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
+    gap: 20px;
+}
+
+ a {
+    color: white;
+ }
+
+
+
+ #titulo {
+    font-size: 2em;
+    font-weight: 500;
+ }
+
+ #toAnfitriao {
+    position: absolute;
+    top: 0;
+ }
+
+
+ #toCliente {
+    position: absolute;
+    top: 0;
+
+ }

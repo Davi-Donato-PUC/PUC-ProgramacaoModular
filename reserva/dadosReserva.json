@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": 1,
+    "hotel_id": 2,
+    "usuario_id": 4
+  },
+  {
+    "id": 2,
+    "hotel_id": 6,
+    "usuario_id": 4
+  },
+  {
+    "id": 3,
+    "hotel_id": 8,
+    "usuario_id": 4
+  },
+  {
+    "id": 4,
+    "hotel_id": 4,
+    "usuario_id": 4
+  }
+]

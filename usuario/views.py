@@ -47,4 +47,4 @@ def loginView(request):
 
 def logoutView(request) :
     request.session.flush()
-    return redirect("/loginAnfitriao/")
+    return redirect("/login/")
