@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/reservas.css' %}?v={{ STATIC_VERSION }}">
+
+    <title>Reservas</title>
+</head>
+<body>
+    
+    <div id="corpo" >
+
+        
+        <div id="containerDoUsuario">
+
+        <div id="blocoLogo">INFTRIP</div>
+        <div id="sair"><a href="/logout/">sair</a></div>
+        <div id="verHoteis"><a href="/hoteis/">hoteis</a></div>
+        <div id="nomeUsuario">{{ usuario.username }}</div>
+
+        </div>
+
+
+        <div id="containerDeHoteis">
+
+            {% for hotel in hoteis %}
+                
+            <div class="hotelBox">
+                <div class="hotelNome" > {{hotel.nome}} </div>
+                <div class="hotelPreco" > {{hotel.preco }}</div>
+                <div class="hoteDescricao" > {{hotel.descricao }}</div>
+                
+                
+                <form method="POST" action="{% url 'removerReserva' hotel.id%}" style="display:inline;">
+                    {% csrf_token %}
+                    <button  type="submit" class="buttonCancelarReserva">cancelar reserva</button>
+                </form>
+
+
+            </div>
+
+            {% endfor %}
+        
+        </div>
+
+</body>
+</html>

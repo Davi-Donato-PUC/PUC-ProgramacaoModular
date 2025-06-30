@@ -1,17 +1,26 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from hotel.hotel import *
+from django.utils.timezone import now
+from reserva.reserva import *
+
 import os
 # Create your views here.
 
 def hoteisView(request, pesquisa=None) :
-    if pesquisa :
-        resultados = buscarHotel(pesquisa)
+    if 'usuario' not in request.session :
+        return redirect('/login/')
+    usuario = request.session['usuario']
 
-        return render(request, 'home.html', {'STATUS': 'OK', 'pesquisa':resultados })
+    if pesquisa :
+        resultados = buscarHoteis(pesquisa)
+        resultados = buscar_hoteis_disponiveis(usuario['id'], resultados)
+        return render(request, 'home.html', {'usuario': usuario, 'STATUS': 'OK', 'pesquisa':resultados, 'STATIC_VERSION': now().timestamp() })
     
-    #adicionarHotel('Copacabana Palace', '500', 'BLABLABLA')
-    return render(request, 'home.html', {'STATUS': 'OK', 'pesquisa' : []} )
+    
+    resultados = ler_todos_hoteis()
+    resultados = buscar_hoteis_disponiveis(usuario['id'], resultados)
+    return render(request, 'home.html', { 'usuario': usuario, 'STATUS': 'OK', 'pesquisa' : resultados, 'STATIC_VERSION': now().timestamp() } )
 
 
 

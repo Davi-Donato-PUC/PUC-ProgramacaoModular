@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/anfitriao.css' %}?v={{ STATIC_VERSION }}">
+
+    <title>anfitriao</title>
+</head>
+<body>
+    
+    <div id="corpo" >
+
+        
+        <div id="containerDoUsuario">
+
+        <div id="blocoLogo">INFTRIP</div>
+        <div id="sair"><a href="/logout/">sair</a></div>
+        <div id="adicionarHotel"><a href="/adicionarHotel/">Adicionar Hotel</a></div>
+
+        <div id="nomeUsuario">{{ anfitriao.nome }}</div>
+
+        </div>
+
+
+        <div id="containerDeHoteis">
+
+            {% for hotel in hoteis %}
+                
+            <div class="hotelBox">
+                <div class="hotelNome" > {{hotel.nome}} </div>
+                <div class="hotelPreco" > {{hotel.preco }}</div>
+                <div class="hoteDescricao" > {{hotel.descricao }}</div>
+
+            </div>
+
+            {% endfor %}
+        
+        </div>
+
+</body>
+</html>

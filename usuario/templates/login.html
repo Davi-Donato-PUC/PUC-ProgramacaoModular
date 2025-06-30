@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css'  %}?v={{ STATIC_VERSION }}">
+
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="central">
+        
+        <div id="toAnfitriao">
+            <div><a href="/loginAnfitriao/">Sou anfitrião</a></div>
+        </div>
+
+        <div><a href="/cadastro/">não tem contar? cadastra-se</a></div>
+        <div id="loginBox">
+            <div  id="titulo" > LOGAR </div>
+            <form method="post" >
+
+                {% csrf_token %}
+                {{ formulario.as_p }}
+                <button type="submit">Enviar</button>
+                
+            </form>
+
+        </div>
+        
+    </div>
+
+
+
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,13 @@
+[
+    {
+        "id": 1,
+        "nome": "Davi Anfitriao",
+        "senha": "123",
+        "hoteis_id": [
+            9,
+            10,
+            11,
+            12
+        ]
+    }
+]

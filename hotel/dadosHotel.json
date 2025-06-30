@@ -10,5 +10,65 @@
     "nome": "Copacabana Palace",
     "preco": "500",
     "descricao": "BLABLABLA"
+  },
+  {
+    "id": 3,
+    "nome": "Beira mar ",
+    "preco": "300",
+    "descricao": "BLABLABLA"
+  },
+  {
+    "id": 4,
+    "nome": "Meier Palace",
+    "preco": "200",
+    "descricao": "BLABLABLA"
+  },
+  {
+    "id": 5,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 6,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 7,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 8,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 9,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 10,
+    "nome": "Hotelzao",
+    "preco": "110",
+    "descricao": "nadana"
+  },
+  {
+    "id": 11,
+    "nome": "dadasd",
+    "preco": "123",
+    "descricao": "asdads"
+  },
+  {
+    "id": 12,
+    "nome": "adafsafaf",
+    "preco": "110",
+    "descricao": "adafadfasfaf"
   }
 ]

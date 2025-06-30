@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'hotel',
+    'usuario',
+    'reserva',
+    'anfitriao',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +58,10 @@ ROOT_URLCONF = '_INFTRIP.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['hotel/templates'],
+        'DIRS': ['hotel/templates', 
+                 'usuario/templates'
+
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
