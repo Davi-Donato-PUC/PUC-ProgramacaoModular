@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 CAMINHO_ARQUIVO = "reserva/dadosReserva.json"
 
 
@@ -13,7 +13,8 @@ def salvar_todos(dados):
         json.dump(dados, f, indent=2)
 
 
-def adicionarReserva(hotelId, usuarioId) :
+def adicionarReserva(hotelId, usuarioId, checkin, checkout) :
+
     dados = ler_todas_reservas()
     novo_id = 1 if not dados else max(item["id"] for item in dados) + 1
 
@@ -21,7 +22,7 @@ def adicionarReserva(hotelId, usuarioId) :
     for dado in dados :
         if hotelId == dado['hotel_id'] : return 0
 
-    novo = {"id": novo_id, "hotel_id": hotelId, "usuario_id": usuarioId }
+    novo = {"id": novo_id, "hotel_id": hotelId, "usuario_id": usuarioId, "checkin": checkin, "checkout": checkout  }
     dados.append(novo)
     salvar_todos(dados)
 
@@ -39,12 +40,7 @@ def listar_reservas_por_usuario(usuario_id):
 
 
 
-def obterIdHoteisReservados(reservas) :
-    ids = []
-    for reserva in reservas :
-        ids.append(reserva['hotel_id'])    
-    return ids
-    
+
 
 
 

@@ -13,7 +13,7 @@ def salvar_todos(dados):
 def adicionarHotel(nome, preco, descricao):
     dados = ler_todos_hoteis()
     novo_id = 1 if not dados else max(item["id"] for item in dados) + 1
-    novo = {"id": novo_id, "nome": nome, "preco": preco, "descricao": descricao}
+    novo = {"id": novo_id, "nome": nome, "preco": preco, "descricao": descricao, }
     dados.append(novo)
     salvar_todos(dados)
     return novo_id
@@ -32,12 +32,38 @@ def buscarHoteis(criterio):
     return resultados
 
 
+
+def obterIdHoteisReservados(reservas) :
+    ids = []
+    for reserva in reservas :
+        ids.append( reserva['hotel_id'] )    
+    return ids
+    
+
 def obterHoteisPorIds(ids:list) :
     dados = ler_todos_hoteis()
     hoteis = []
     for dado in dados :
         if dado['id'] in ids : hoteis.append(dado)
     return hoteis
+
+def obterReservasComDadosCompletos(reservas):
+    dados_hoteis = ler_todos_hoteis()
+    resultado = []
+
+    for reserva in reservas:
+        hotel_id = reserva['hotel_id']
+        hotel = next((h for h in dados_hoteis if h['id'] == hotel_id), None)
+        if hotel:
+            entrada = {
+                'checkin': reserva.get('checkin'),
+                'checkout': reserva.get('checkout'),
+                **hotel  # Desestrutura os campos do hotel no mesmo nível
+            }
+            resultado.append(entrada)
+
+    return resultado
+
 
 
 
@@ -51,3 +77,6 @@ def buscar_hoteis_disponiveis(usuario_id, hoteis):
     hoteis_disponiveis = [hotel for hotel in hoteis if hotel['id'] not in hoteis_reservados_usuario]
 
     return hoteis_disponiveis
+
+
+

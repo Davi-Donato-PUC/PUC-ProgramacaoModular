@@ -4,36 +4,28 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/anfitriao.css'  %}?v={{ STATIC_VERSION }}">
-
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/loginAnfitriao.css' %}?v={{ STATIC_VERSION }}">
+    <title>Login - Anfitrião</title>
 </head>
 <body>
-    
-    <div id="central">
-
-       <div id="toCliente">
-            <div><a href="/login/">Sou cliente</a></div>
-        </div>
-        
-        <div><a href="/cadastroAnfitriao/">não tem conta? cadastra-se</a></div>
-        <div id="loginBox">
-            <div  id="titulo" > LOGAR </div>
-            <form method="post" >
-
-                {% csrf_token %}
-                {{ formulario.as_p }}
-                <button type="submit">Enviar</button>
-                
-            </form>
-
-        </div>
-        
+    <!-- Link no canto superior direito -->
+    <div id="toCliente">
+        <a href="/login/">Sou cliente</a>
     </div>
 
+    <div id="central">
+        <div id="cadastroLink">
+            <a href="/cadastroAnfitriao/">Não tem conta? Cadastre-se</a>
+        </div>
 
-
-
+        <div id="loginBox">
+            <h1 id="titulo">Login</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ formulario.as_p }}
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
-

@@ -5,39 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/anfitriao.css' %}?v={{ STATIC_VERSION }}">
-
-    <title>anfitriao</title>
+    <title>INFTRIP - Painel do Anfitrião</title>
 </head>
 <body>
-    
-    <div id="corpo" >
+    <div id="corpo">
 
-        
+        <!-- Topo do painel -->
         <div id="containerDoUsuario">
-
-        <div id="blocoLogo">INFTRIP</div>
-        <div id="sair"><a href="/logout/">sair</a></div>
-        <div id="adicionarHotel"><a href="/adicionarHotel/">Adicionar Hotel</a></div>
-
-        <div id="nomeUsuario">{{ anfitriao.nome }}</div>
-
-        </div>
-
-
-        <div id="containerDeHoteis">
-
-            {% for hotel in hoteis %}
-                
-            <div class="hotelBox">
-                <div class="hotelNome" > {{hotel.nome}} </div>
-                <div class="hotelPreco" > {{hotel.preco }}</div>
-                <div class="hoteDescricao" > {{hotel.descricao }}</div>
-
+            <div id="blocoLogo">INFTRIP</div>
+            <div id="acoesUsuario">
+                <a id="adicionarHotel" href="/adicionarHotel/">+ Adicionar Hotel</a>
+                <span id="nomeUsuario">{{ anfitriao.nome }}</span>
+                <a id="sair" href="/logout/">Sair</a>
             </div>
-
-            {% endfor %}
-        
         </div>
 
+        <!-- Listagem dos hotéis -->
+        <div id="containerDeHoteis">
+            {% for hotel in hoteis %}
+                <div class="hotelBox">
+                    <div class="hotelNome">{{ hotel.nome }}</div>
+                    <div class="hotelPreco">R$ {{ hotel.preco }}</div>
+                    <div class="hotelDescricao">{{ hotel.descricao }}</div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
 </body>
 </html>

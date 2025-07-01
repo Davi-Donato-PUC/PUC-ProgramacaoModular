@@ -1,0 +1,101 @@
+ /* Reset e base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Link "Sou cliente" no topo direito */
+#toCliente {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#toCliente a {
+    text-decoration: none;
+    color: #e65100;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+#toCliente a:hover {
+    color: #bf360c;
+}
+
+/* Container central */
+#central {
+    background-color: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+/* Link para login */
+#loginLink {
+    margin-bottom: 15px;
+}
+
+#loginLink a {
+    text-decoration: none;
+    color: #e65100;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+#loginLink a:hover {
+    color: #bf360c;
+}
+
+/* Título */
+#loginBox h1#titulo {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form p {
+    text-align: left;
+}
+
+form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+form button {
+    padding: 12px;
+    background-color: #e65100;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #bf360c;
+}

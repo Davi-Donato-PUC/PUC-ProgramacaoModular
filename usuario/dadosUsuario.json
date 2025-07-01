@@ -1,22 +1,12 @@
 [
   {
     "id": 1,
-    "username": "Davi Donato",
+    "username": "DaviDonato",
     "senha": "123"
   },
   {
     "id": 2,
-    "username": "dd1",
-    "senha": "abacate"
-  },
-  {
-    "id": 3,
-    "username": "dd",
-    "senha": "123"
-  },
-  {
-    "id": 4,
-    "username": "Bolsonaro",
-    "senha": "123"
+    "username": "Martin",
+    "senha": "abc"
   }
 ]

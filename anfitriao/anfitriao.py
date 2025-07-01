@@ -30,7 +30,7 @@ def adicionar_anfitriao(nome, senha):
     }
     usuarios.append(novo_usuario)
     salvar_anfitrioes(usuarios)
-    print(f"Usuário '{nome}' adicionado com ID {novo_id}.")
+    return novo_usuario
 
 
 
@@ -47,7 +47,6 @@ def adicionarHotelAoAnfitriao(anfitriaoId, hotelId) :
     anfitrioes = ler_todos_anfitrioes()
     for anfitriao in anfitrioes :
         if anfitriao['id'] == anfitriaoId :
-            print(type(anfitriao))
             anfitriao['hoteis_id'].append(hotelId)
     salvar_anfitrioes(anfitrioes)
 

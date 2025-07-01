@@ -2,28 +2,21 @@
 <html lang="pt-br">
 <head>
     {% load static %}
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>adicionar hotel</title>
+    <title>Adicionar Hotel</title>
     <link rel="stylesheet" href="{% static 'css/anfitriao.css' %}?v={{ STATIC_VERSION }}">
-
 </head>
 <body>
-    
     <div id="corpoAddHotel">
-
-        <div id="centrlaAddHotel">
-
-            <form method="post" >
+        <div id="formContainer">
+            <h1>Adicionar Novo Hotel</h1>
+            <form method="post">
                 {% csrf_token %}
                 {{ formulario.as_p }}
                 <button type="submit">Enviar</button>
             </form>
-            
         </div>
     </div>
-
-
 </body>
 </html>

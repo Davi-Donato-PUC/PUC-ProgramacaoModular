@@ -19,56 +19,20 @@
   },
   {
     "id": 4,
-    "nome": "Meier Palace",
-    "preco": "200",
-    "descricao": "BLABLABLA"
+    "nome": "Nova Igua\u00e7u Hotel",
+    "preco": "110",
+    "descricao": "blabla bla bla bla bla bla bla bla"
   },
   {
     "id": 5,
-    "nome": "Hotelzinho",
-    "preco": "110",
-    "descricao": "algo algo"
+    "nome": "Realengo Palace",
+    "preco": "50",
+    "descricao": "nada nada nada"
   },
   {
     "id": 6,
-    "nome": "Hotelzinho",
-    "preco": "110",
-    "descricao": "algo algo"
-  },
-  {
-    "id": 7,
-    "nome": "Hotelzinho",
-    "preco": "110",
-    "descricao": "algo algo"
-  },
-  {
-    "id": 8,
-    "nome": "Hotelzinho",
-    "preco": "110",
-    "descricao": "algo algo"
-  },
-  {
-    "id": 9,
-    "nome": "Hotelzinho",
-    "preco": "110",
-    "descricao": "algo algo"
-  },
-  {
-    "id": 10,
-    "nome": "Hotelzao",
-    "preco": "110",
-    "descricao": "nadana"
-  },
-  {
-    "id": 11,
-    "nome": "dadasd",
-    "preco": "123",
-    "descricao": "asdads"
-  },
-  {
-    "id": 12,
-    "nome": "adafsafaf",
-    "preco": "110",
-    "descricao": "adafadfasfaf"
+    "nome": "Cosmos Alian\u00e7a",
+    "preco": "80",
+    "descricao": "160"
   }
 ]
