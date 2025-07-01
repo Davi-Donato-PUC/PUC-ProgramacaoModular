@@ -3,7 +3,12 @@ dd
 
 
 
-venv/Scripts/activate
+RODAR VENV: venv/Scripts/activate
+RODAR APLICAÇÃO:  python manage.py runserver
+
+
+
+doc
 
 
 

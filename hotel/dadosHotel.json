@@ -34,5 +34,11 @@
     "nome": "Cosmos Alian\u00e7a",
     "preco": "80",
     "descricao": "160"
+  },
+  {
+    "id": 7,
+    "nome": "Hotelzinho",
+    "preco": "110",
+    "descricao": "algo algo"
   }
 ]
