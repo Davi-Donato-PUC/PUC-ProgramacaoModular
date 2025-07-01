@@ -7,23 +7,37 @@
     "checkout": "2025-07-01"
   },
   {
-    "id": 4,
-    "hotel_id": 5,
-    "usuario_id": 1,
+    "id": 6,
+    "hotel_id": 3,
+    "usuario_id": 3,
     "checkin": "2025-07-01",
     "checkout": "2025-07-01"
   },
   {
-    "id": 5,
+    "id": 7,
     "hotel_id": 2,
     "usuario_id": 1,
     "checkin": "2025-07-01",
     "checkout": "2025-07-01"
   },
   {
-    "id": 6,
-    "hotel_id": 3,
-    "usuario_id": 3,
+    "id": 8,
+    "hotel_id": 5,
+    "usuario_id": 1,
+    "checkin": "2025-07-01",
+    "checkout": "2025-07-01"
+  },
+  {
+    "id": 9,
+    "hotel_id": 6,
+    "usuario_id": 1,
+    "checkin": "2025-07-01",
+    "checkout": "2025-07-01"
+  },
+  {
+    "id": 10,
+    "hotel_id": 7,
+    "usuario_id": 1,
     "checkin": "2025-07-01",
     "checkout": "2025-07-01"
   }

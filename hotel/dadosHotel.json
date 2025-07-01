@@ -40,5 +40,23 @@
     "nome": "Hotelzinho",
     "preco": "110",
     "descricao": "algo algo"
+  },
+  {
+    "id": 8,
+    "nome": "Sulacap Palcae",
+    "preco": "50",
+    "descricao": "nadana"
+  },
+  {
+    "id": 9,
+    "nome": "Daasd",
+    "preco": "110",
+    "descricao": "algo algo"
+  },
+  {
+    "id": 10,
+    "nome": "Algo palace",
+    "preco": "25",
+    "descricao": "blabla"
   }
 ]

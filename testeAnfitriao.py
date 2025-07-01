@@ -1,115 +1,90 @@
 import unittest
-import os
+from unittest.mock import patch, mock_open
 import json
-from anfitriao.anfitriao import (
-    ler_todos_anfitrioes, salvar_anfitrioes, iniciarModuloAnfitriao,
-    obterAnfitrioes, adicionar_anfitriao, listarHoteisDoAnfitriao,
-    adicionarHotelAoAnfitriao, obterHoteisDoAnfitriao,
-    CAMINHO_ARQUIVO
-)
 
-# Dados de teste
-DADOS_TESTE = [
-    {
-        "id": 1,
-        "nome": "Anfitriao1",
-        "senha": "senha1",
-        "hoteis_id": [10, 20]
-    },
-    {
-        "id": 2,
-        "nome": "Anfitriao2",
-        "senha": "senha2",
-        "hoteis_id": []
-    }
-]
-
-# Mock para função obterHoteis (do módulo hotel)
-def mock_obterHoteis():
-    return [
-        {"id": 10, "nome": "Hotel A", "preco": "100", "descricao": "desc A"},
-        {"id": 20, "nome": "Hotel B", "preco": "200", "descricao": "desc B"},
-        {"id": 30, "nome": "Hotel C", "preco": "300", "descricao": "desc C"},
-    ]
+import anfitriao.anfitriao as anfitriao_mod
 
 
-class TestModuloAnfitriao(unittest.TestCase):
+class TestAnfitriaoModule(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.backup = None
-        if os.path.exists(CAMINHO_ARQUIVO):
-            with open(CAMINHO_ARQUIVO, 'r', encoding='utf-8') as f:
-                cls.backup = f.read()
+    def setUp(self):
+        self.exemplo_anfitrioes = [
+            {"id": 1, "nome": "Carlos", "senha": "1234", "hoteis_id": [1, 2]},
+            {"id": 2, "nome": "Ana", "senha": "abcd", "hoteis_id": []}
+        ]
+        anfitriao_mod.ESTRUTURA_ANFITRIOES = self.exemplo_anfitrioes.copy()
 
-        with open(CAMINHO_ARQUIVO, 'w', encoding='utf-8') as f:
-            json.dump(DADOS_TESTE, f, indent=4, ensure_ascii=False)
+    @patch("os.path.exists", return_value=True)
+    @patch("builtins.open", new_callable=mock_open, read_data=json.dumps([
+        {"id": 1, "nome": "Carlos", "senha": "1234", "hoteis_id": [1]}
+    ]))
+    def test_ler_todos_anfitrioes_valido(self, mock_file, mock_exists):
+        resultado = anfitriao_mod.ler_todos_anfitrioes()
+        self.assertEqual(resultado[0]["nome"], "Carlos")
 
-        iniciarModuloAnfitriao()
+    @patch("os.path.exists", return_value=False)
+    def test_ler_todos_anfitrioes_arquivo_inexistente(self, mock_exists):
+        resultado = anfitriao_mod.ler_todos_anfitrioes()
+        self.assertEqual(resultado, [])
 
-    @classmethod
-    def tearDownClass(cls):
-        if cls.backup is not None:
-            with open(CAMINHO_ARQUIVO, 'w', encoding='utf-8') as f:
-                f.write(cls.backup)
+    @patch("builtins.open", new_callable=mock_open)
+    def test_salvar_anfitrioes(self, mock_file):
+        status = anfitriao_mod.salvar_anfitrioes(self.exemplo_anfitrioes)
+        self.assertEqual(status, 0)
+        mock_file.assert_called_with(anfitriao_mod.CAMINHO_ARQUIVO, "w", encoding="utf-8")
 
-    def test_ler_todos_anfitrioes(self):
-        anfitrioes = ler_todos_anfitrioes()
-        self.assertIsInstance(anfitrioes, list)
-        self.assertEqual(len(anfitrioes), len(DADOS_TESTE))
-
-    def test_salvar_anfitrioes_sucesso(self):
-        resultado = salvar_anfitrioes(DADOS_TESTE)
-        self.assertEqual(resultado, 0)
+    def test_iniciarModuloAnfitriao(self):
+        with patch("anfitriao.anfitriao.ler_todos_anfitrioes", return_value=self.exemplo_anfitrioes):
+            anfitriao_mod.iniciarModuloAnfitriao()
+            self.assertEqual(anfitriao_mod.ESTRUTURA_ANFITRIOES, self.exemplo_anfitrioes)
 
     def test_obterAnfitrioes(self):
-        anfitrioes = obterAnfitrioes()
-        self.assertEqual(len(anfitrioes), len(DADOS_TESTE))
+        resultado = anfitriao_mod.obterAnfitrioes()
+        self.assertEqual(resultado, self.exemplo_anfitrioes)
 
     def test_adicionar_anfitriao_valido(self):
-        novo = adicionar_anfitriao("NovoAnfitriao", "novaSenha")
+        novo = anfitriao_mod.adicionar_anfitriao("Bruno", "senha123")
         self.assertIsInstance(novo, dict)
-        self.assertEqual(novo["nome"], "NovoAnfitriao")
-        self.assertEqual(novo["hoteis_id"], [])
+        self.assertEqual(novo["nome"], "Bruno")
+        self.assertEqual(novo["id"], 3)
 
     def test_adicionar_anfitriao_invalido(self):
-        self.assertIsNone(adicionar_anfitriao("", ""))
-        self.assertIsNone(adicionar_anfitriao("nome", ""))
+        self.assertIsNone(anfitriao_mod.adicionar_anfitriao("", ""))
+        self.assertIsNone(anfitriao_mod.adicionar_anfitriao("Joao", ""))
 
-    def test_listarHoteisDoAnfitriao(self):
-        # Monkey patch obterHoteis para controlar retorno
-        import anfitriao.anfitriao
-        original = anfitriao.anfitriao.obterHoteis
-        anfitriao.anfitriao.obterHoteis = mock_obterHoteis
-
-        hoteis = listarHoteisDoAnfitriao([10, 30])
-        self.assertEqual(len(hoteis), 2)
-        ids = [h['id'] for h in hoteis]
-        self.assertIn(10, ids)
-        self.assertIn(30, ids)
-
-        anfitriao.anfitriao.obterHoteis = original
+    @patch("anfitriao.anfitriao.obterHoteis")
+    def test_listarHoteisDoAnfitriao(self, mock_obterHoteis):
+        mock_obterHoteis.return_value = [
+            {"id": 1, "nome": "Hotel A"},
+            {"id": 2, "nome": "Hotel B"},
+            {"id": 3, "nome": "Hotel C"},
+        ]
+        resultado = anfitriao_mod.listarHoteisDoAnfitriao([1, 3])
+        self.assertEqual(len(resultado), 2)
+        self.assertEqual(resultado[0]["id"], 1)
+        self.assertEqual(resultado[1]["id"], 3)
 
     def test_adicionarHotelAoAnfitriao_sucesso(self):
-        anfitriao_id = DADOS_TESTE[1]['id']  # Anfitriao2 sem hotéis
-        resultado = adicionarHotelAoAnfitriao(anfitriao_id, 40)
-        self.assertEqual(resultado, 1)
-        # Verifica se o hotel foi adicionado
-        ids_hoteis = obterHoteisDoAnfitriao(anfitriao_id)
-        self.assertIn(40, ids_hoteis)
+        status = anfitriao_mod.adicionarHotelAoAnfitriao(2, 5)
+        self.assertEqual(status, 1)
+        self.assertIn(5, anfitriao_mod.ESTRUTURA_ANFITRIOES[1]['hoteis_id'])
 
-    def test_adicionarHotelAoAnfitriao_anfitriao_nao_encontrado(self):
-        resultado = adicionarHotelAoAnfitriao(9999, 40)
-        self.assertEqual(resultado, 0)
+    def test_adicionarHotelAoAnfitriao_ja_existe(self):
+        status = anfitriao_mod.adicionarHotelAoAnfitriao(1, 1)
+        self.assertEqual(status, 1)  # Mesmo que já exista, retorna 1
 
-    def test_obterHoteisDoAnfitriao_existente(self):
-        anfitriao_id = DADOS_TESTE[0]['id']  # Anfitriao1 tem 10 e 20
-        hoteis = obterHoteisDoAnfitriao(anfitriao_id)
-        self.assertListEqual(hoteis, [10, 20])
+    def test_adicionarHotelAoAnfitriao_inexistente(self):
+        status = anfitriao_mod.adicionarHotelAoAnfitriao(999, 1)
+        self.assertEqual(status, 0)
+
+    def test_obterHoteisDoAnfitriao_valido(self):
+        resultado = anfitriao_mod.obterHoteisDoAnfitriao(1)
+        self.assertEqual(resultado, [1, 2])
 
     def test_obterHoteisDoAnfitriao_inexistente(self):
-        hoteis = obterHoteisDoAnfitriao(9999)
-        self.assertEqual(hoteis, [])
+        resultado = anfitriao_mod.obterHoteisDoAnfitriao(999)
+        self.assertEqual(resultado, [])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,14 +1,11 @@
 dd
 123
 
-
-
 RODAR VENV: venv/Scripts/activate
 RODAR APLICAÇÃO:  python manage.py runserver
 
+(arquivo db.sqlite3 padrão do django, não tem como apagar)
 
-
-doc
-
+Testes: os testes esperam mensagem de erro no terminal pois estão testando valores falsos e propositalmente errados.
 
 

@@ -1,11 +1,13 @@
+# =========================
+# Diretivas de Entrada
+# =========================
+# - json: Para leitura e escrita de arquivos JSON.
+# - os: Para verificar existência de arquivos.
+# - obterHoteis: Função importada do módulo hotel, usada para listar hotéis de um anfitrião.
 
 import json
 import os
 from hotel.hotel import obterHoteis
-import atexit
-
-import json
-import os
 
 CAMINHO_ARQUIVO = "anfitriao/dadosAnfitriao.json"
 
@@ -13,13 +15,17 @@ CAMINHO_ARQUIVO = "anfitriao/dadosAnfitriao.json"
 # Função: ler_todos_anfitrioes
 # =========================
 # Descrição:
-# Lê todos os anfitriões a partir do arquivo JSON. Se o arquivo não existir, retorna lista vazia.
+# Lê todos os anfitriões do arquivo JSON definido em CAMINHO_ARQUIVO.
+# Retorna lista de dicionários ou [] se o arquivo não existir ou ocorrer erro.
 # Acoplamento:
-# - Depende do arquivo JSON estar no caminho correto e com estrutura válida.
+# - Depende do arquivo JSON existir e conter estrutura válida.
+# - Usa a biblioteca json e os.path.
+# Condições de Acoplamento:
+# - O arquivo precisa estar acessível e com conteúdo JSON bem formatado.
 # Hipóteses:
-# - O JSON contém uma lista de dicionários com os campos 'id', 'nome', 'senha', 'hoteis_id'.
+# - Cada anfitrião é um dicionário com as chaves 'id', 'nome', 'senha' e 'hoteis_id'.
 # Interface com o Usuário:
-# - Sem interação direta.
+# - Imprime erro no console, se houver falha.
 
 def ler_todos_anfitrioes():
     if not os.path.exists(CAMINHO_ARQUIVO):
@@ -37,9 +43,16 @@ def ler_todos_anfitrioes():
 # =========================
 # Descrição:
 # Salva a lista de anfitriões no arquivo JSON.
+# Acoplamento:
+# - Usa json e CAMINHO_ARQUIVO.
+# Condições de Acoplamento:
+# - A lista de anfitriões deve ser serializável em JSON.
+# - O arquivo deve ser acessível para escrita.
+# Interface com o Usuário:
+# - Emite erro no console, se necessário.
 # Retornos:
-# - 0: sucesso
-# - 1: erro ao salvar
+# - int: 0 para sucesso, 1 em caso de erro.
+
 def salvar_anfitrioes(usuarios):
     try:
         with open(CAMINHO_ARQUIVO, "w", encoding="utf-8") as arquivo:
@@ -54,7 +67,12 @@ def salvar_anfitrioes(usuarios):
 # Função: iniciarModuloAnfitriao
 # =========================
 # Descrição:
-# Inicializa o módulo carregando os dados dos anfitriões em memória.
+# Inicializa a estrutura de anfitriões em memória a partir do arquivo JSON.
+# Acoplamento:
+# - Depende de ler_todos_anfitrioes.
+# Interface com o Usuário:
+# - Imprime mensagem indicando inicialização do módulo.
+
 def iniciarModuloAnfitriao():
     global ESTRUTURA_ANFITRIOES
     ESTRUTURA_ANFITRIOES = ler_todos_anfitrioes()
@@ -65,22 +83,36 @@ def iniciarModuloAnfitriao():
 # Função: obterAnfitrioes
 # =========================
 # Descrição:
-# Retorna todos os anfitriões carregados na memória.
+# Retorna uma cópia da lista de anfitriões atualmente carregada na memória.
+# Acoplamento:
+# - Depende da variável global ESTRUTURA_ANFITRIOES.
+# Interface com o Usuário:
+# - Não interage diretamente.
+# Retorno:
+# - list: Cópia da estrutura de anfitriões.
+
 def obterAnfitrioes():
     global ESTRUTURA_ANFITRIOES
-    return ESTRUTURA_ANFITRIOES
+    return ESTRUTURA_ANFITRIOES[:]
 
 
 # =========================
 # Função: adicionar_anfitriao
 # =========================
 # Descrição:
-# Adiciona um novo anfitrião ao sistema.
+# Adiciona um novo anfitrião com nome, senha e lista de hotéis vazia.
+# Acoplamento:
+# - Usa e modifica a estrutura global ESTRUTURA_ANFITRIOES.
+# Condições de Acoplamento:
+# - nome e senha devem ser válidos.
 # Hipóteses:
-# - Nome de usuário e senha são válidos e únicos.
+# - O nome é único (não verificado aqui).
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retornos:
-# - Dicionário do novo anfitrião.
-# - None: se dados inválidos.
+# - dict: Dicionário do novo anfitrião.
+# - None: Em caso de dados inválidos.
+
 def adicionar_anfitriao(nome, senha):
     global ESTRUTURA_ANFITRIOES
 
@@ -104,9 +136,14 @@ def adicionar_anfitriao(nome, senha):
 # Função: listarHoteisDoAnfitriao
 # =========================
 # Descrição:
-# Recebe uma lista de IDs de hotéis e retorna os dados completos desses hotéis.
+# Dado uma lista de IDs de hotéis, retorna os dados completos dos hotéis que o anfitrião possui.
 # Acoplamento:
 # - Depende da função obterHoteis() do módulo de hotéis.
+# Interface com o Usuário:
+# - Não interage diretamente.
+# Retorno:
+# - list: Lista de dicionários com dados dos hotéis.
+
 def listarHoteisDoAnfitriao(hoteisIds):
     hoteis = obterHoteis()  # esta função deve estar disponível/importada do módulo de hotéis
     hoteisAnf = [hotel for hotel in hoteis if hotel['id'] in hoteisIds]
@@ -117,12 +154,20 @@ def listarHoteisDoAnfitriao(hoteisIds):
 # Função: adicionarHotelAoAnfitriao
 # =========================
 # Descrição:
-# Adiciona um hotel à lista de hotéis gerenciados por um anfitrião específico.
+# Adiciona o ID de um hotel à lista de hotéis de um anfitrião.
+# Acoplamento:
+# - Modifica ESTRUTURA_ANFITRIOES.
+# Condições de Acoplamento:
+# - O anfitrião deve existir e não deve já possuir o hotel.
 # Hipóteses:
-# - ID do anfitrião existe.
+# - O ID do hotel é válido e já foi criado anteriormente.
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retornos:
-# - 0: anfitrião não encontrado
-# - 1: hotel adicionado com sucesso
+# - int:
+#     - 0: anfitrião não encontrado
+#     - 1: hotel adicionado com sucesso (ou já existente)
+
 def adicionarHotelAoAnfitriao(anfitriaoId, hotelId):
     global ESTRUTURA_ANFITRIOES
     anfitrioes = ESTRUTURA_ANFITRIOES
@@ -139,10 +184,16 @@ def adicionarHotelAoAnfitriao(anfitriaoId, hotelId):
 # Função: obterHoteisDoAnfitriao
 # =========================
 # Descrição:
-# Retorna a lista de IDs de hotéis que um anfitrião administra.
+# Retorna a lista de IDs dos hotéis administrados por um anfitrião.
+# Acoplamento:
+# - Acessa ESTRUTURA_ANFITRIOES.
+# Condições de Acoplamento:
+# - O anfitrião deve existir na estrutura.
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retornos:
-# - Lista de IDs de hotéis.
-# - []: se anfitrião não for encontrado.
+# - list: Lista com IDs de hotéis, ou lista vazia se o anfitrião não for encontrado.
+
 def obterHoteisDoAnfitriao(id):
     global ESTRUTURA_ANFITRIOES
     anfitrioes = ESTRUTURA_ANFITRIOES

@@ -1,115 +1,86 @@
-
-from django.test import TestCase
-
-# Create your tests here.
 import unittest
-import os
+from unittest.mock import patch, mock_open
 import json
-from hotel.hotel import (
-    ler_todos_hoteis, iniciarModulo, salvar_todos, obterHoteis,
-    adicionarHotel, buscarHoteis, obterIdHoteisReservados,
-    obterHoteisPorIds, obterReservasComDadosCompletos,
-    buscar_hoteis_disponiveis, CAMINHO_ARQUIVO
-)
 
-# Dados simulados
-DADOS_TESTE = [
-    {"id": 1, "nome": "Hotel Luxo", "preco": "500", "descricao": "5 estrelas"},
-    {"id": 2, "nome": "Hotel Simples", "preco": "200", "descricao": "2 estrelas"},
-    {"id": 3, "nome": "Pousada Mar", "preco": "300", "descricao": "Vista para o mar"},
-]
+import hotel.hotel as hotel_mod
 
-RESERVAS_TESTE = [
-    {"usuario_id": 1, "hotel_id": 1, "checkin": "2025-07-01", "checkout": "2025-07-05"},
-    {"usuario_id": 2, "hotel_id": 2, "checkin": "2025-07-10", "checkout": "2025-07-12"},
-]
 
-class TestModuloHotel(unittest.TestCase):
+class TestHotelModule(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        # Garante um estado limpo antes dos testes
-        cls.backup = None
-        if os.path.exists(CAMINHO_ARQUIVO):
-            with open(CAMINHO_ARQUIVO, 'r') as f:
-                cls.backup = f.read()
+    def setUp(self):
+        # Estado inicial do sistema para testes
+        self.hoteis_exemplo = [
+            {"id": 1, "nome": "Hotel A", "preco": 200.0, "descricao": "Luxo"},
+            {"id": 2, "nome": "Hotel B", "preco": 150.0, "descricao": "Econômico"}
+        ]
+        hotel_mod.ESTRUTURA_HOTEIS = self.hoteis_exemplo.copy()
 
-        with open(CAMINHO_ARQUIVO, 'w') as f:
-            json.dump(DADOS_TESTE, f, indent=2)
+    @patch("builtins.open", new_callable=mock_open, read_data='[{"id": 1, "nome": "Hotel A", "preco": 200.0, "descricao": "Luxo"}]')
+    def test_ler_todos_hoteis(self, mock_file):
+        resultado = hotel_mod.ler_todos_hoteis()
+        self.assertEqual(resultado[0]["nome"], "Hotel A")
+        mock_file.assert_called_with(hotel_mod.CAMINHO_ARQUIVO, "r")
 
-        iniciarModulo()
+    @patch("builtins.open", new_callable=mock_open)
+    def test_salvar_todos(self, mock_file):
+        status = hotel_mod.salvar_todos(self.hoteis_exemplo)
+        self.assertEqual(status, 0)
+        mock_file.assert_called_with(hotel_mod.CAMINHO_ARQUIVO, "w")
+        handle = mock_file()
+        handle.write.assert_called()
 
-    @classmethod
-    def tearDownClass(cls):
-        if cls.backup is not None:
-            with open(CAMINHO_ARQUIVO, 'w') as f:
-                f.write(cls.backup)
+    def test_iniciarModulo(self):
+        with patch("hotel.hotel.ler_todos_hoteis", return_value=self.hoteis_exemplo):
+            hotel_mod.iniciarModulo()
+            self.assertEqual(hotel_mod.ESTRUTURA_HOTEIS, self.hoteis_exemplo)
 
-    def test_ler_todos_hoteis(self):
-        hoteis = ler_todos_hoteis()
-        self.assertIsInstance(hoteis, list)
-        self.assertGreater(len(hoteis), 0)
+    def test_obterHoteis(self):
+        resultado = hotel_mod.obterHoteis()
+        self.assertEqual(resultado, self.hoteis_exemplo)
 
-    def test_salvar_todos_sucesso(self):
-        resultado = salvar_todos(DADOS_TESTE)
-        self.assertEqual(resultado, 0)
+    def test_adicionarHotel_valido(self):
+        novo_id = hotel_mod.adicionarHotel("Hotel C", 300, "Boutique")
+        self.assertEqual(novo_id, 3)
+        self.assertTrue(any(h["nome"] == "Hotel C" for h in hotel_mod.ESTRUTURA_HOTEIS))
 
-    def test_obter_hoteis(self):
-        hoteis = obterHoteis()
-        self.assertEqual(len(hoteis), len(DADOS_TESTE))
+    def test_adicionarHotel_invalido(self):
+        self.assertEqual(hotel_mod.adicionarHotel("", 300, "Descrição"), -1)
 
-    def test_adicionar_hotel_valido(self):
-        novo_id = adicionarHotel("Hotel Novo", "350", "Moderno")
-        self.assertGreater(novo_id, 0)
-
-    def test_adicionar_hotel_invalido(self):
-        self.assertEqual(adicionarHotel("", "", ""), -1)
-
-    def test_buscar_hoteis_nome_existente(self):
-        resultado = buscarHoteis("luxo")
+    def test_buscarHoteis(self):
+        resultado = hotel_mod.buscarHoteis("a")  # deve achar Hotel A
         self.assertEqual(len(resultado), 1)
+        self.assertEqual(resultado[0]["nome"], "Hotel A")
 
-    def test_buscar_hoteis_nome_inexistente(self):
-        resultado = buscarHoteis("inexistente")
-        self.assertEqual(resultado, [])
+    def test_buscarHoteis_criterio_invalido(self):
+        self.assertEqual(hotel_mod.buscarHoteis(123), [])
 
-    def test_buscar_hoteis_criterio_invalido(self):
-        resultado = buscarHoteis(12345)
-        self.assertEqual(resultado, [])
+    def test_obterIdHoteisReservados(self):
+        reservas = [{"hotel_id": 1}, {"hotel_id": 2}]
+        ids = hotel_mod.obterIdHoteisReservados(reservas)
+        self.assertEqual(ids, [1, 2])
 
-    def test_obter_id_hoteis_reservados(self):
-        ids = obterIdHoteisReservados(RESERVAS_TESTE)
-        self.assertListEqual(ids, [1, 2])
+    def test_obterHoteisPorIds(self):
+        resultado = hotel_mod.obterHoteisPorIds([2])
+        self.assertEqual(len(resultado), 1)
+        self.assertEqual(resultado[0]["id"], 2)
 
-    def test_obter_hoteis_por_ids(self):
-        resultado = obterHoteisPorIds([1, 3])
-        self.assertEqual(len(resultado), 2)
-        ids_resultado = [h["id"] for h in resultado]
-        self.assertIn(1, ids_resultado)
-        self.assertIn(3, ids_resultado)
-
-    def test_obter_reservas_com_dados_completos(self):
-        resultado = obterReservasComDadosCompletos(RESERVAS_TESTE)
-        self.assertEqual(len(resultado), 2)
+    def test_obterReservasComDadosCompletos(self):
+        reservas = [{"hotel_id": 1, "checkin": "2025-07-01", "checkout": "2025-07-02"}]
+        resultado = hotel_mod.obterReservasComDadosCompletos(reservas)
+        self.assertEqual(len(resultado), 1)
         self.assertIn("checkin", resultado[0])
-        self.assertIn("nome", resultado[0])
+        self.assertEqual(resultado[0]["nome"], "Hotel A")
 
-    def test_buscar_hoteis_disponiveis(self):
-        # Função depende de obterReservas, então vamos injetar manualmente
-        from reserva.reserva import obterReservas
-        import types
-        def fake_obterReservas():
-            return RESERVAS_TESTE
-        # Monkey patch
-        original = obterReservas
-        import reserva.reserva
-        reserva.reserva.obterReservas = fake_obterReservas
+    @patch("hotel.hotel.obterReservas")
+    def test_buscar_hoteis_disponiveis(self, mock_obterReservas):
+        mock_obterReservas.return_value = [
+            {"usuario_id": 10, "hotel_id": 1},
+            {"usuario_id": 20, "hotel_id": 2}
+        ]
+        resultado = hotel_mod.buscar_hoteis_disponiveis(10, self.hoteis_exemplo)
+        self.assertEqual(len(resultado), 1)
+        self.assertEqual(resultado[0]["id"], 2)
 
-        disponiveis = buscar_hoteis_disponiveis(1, DADOS_TESTE)
-        self.assertEqual(len(disponiveis), 2)  # Hotel 1 já está reservado por user 1
 
-        # Restaura original
-        reserva.reserva.obterReservas = original
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

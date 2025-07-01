@@ -18,7 +18,7 @@ def hoteisView(request, pesquisa=None) :
         return render(request, 'home.html', {'usuario': usuario, 'STATUS': 'OK', 'pesquisa':resultados, 'STATIC_VERSION': now().timestamp() })
     
     
-    resultados = ler_todos_hoteis()
+    resultados = obterHoteis()
     resultados = buscar_hoteis_disponiveis(usuario['id'], resultados)
     return render(request, 'home.html', { 'usuario': usuario, 'STATUS': 'OK', 'pesquisa' : resultados, 'STATIC_VERSION': now().timestamp() } )
 

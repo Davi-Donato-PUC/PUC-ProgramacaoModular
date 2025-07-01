@@ -1,6 +1,7 @@
-import json
-from datetime import datetime
-import atexit
+# ======================
+# Diretivas de Entrada
+# ======================
+# - json: Biblioteca padrão usada para leitura e escrita de arquivos JSON.
 
 import json
 
@@ -10,13 +11,16 @@ CAMINHO_ARQUIVO = "reserva/dadosReserva.json"
 # Função: ler_todas_reservas
 # ======================
 # Descrição:
-# Lê todas as reservas salvas no arquivo JSON. Retorna lista de reservas ou [] em caso de erro.
+# Lê todas as reservas salvas no arquivo JSON definido por CAMINHO_ARQUIVO.
+# Retorna uma lista de reservas se a leitura for bem-sucedida ou uma lista vazia em caso de erro.
 # Acoplamento:
-# - Depende da existência do arquivo definido por CAMINHO_ARQUIVO.
+# - Depende da biblioteca json e do arquivo CAMINHO_ARQUIVO.
+# Condições de Acoplamento:
+# - O arquivo deve existir e conter uma lista de dicionários válidos.
 # Hipóteses:
-# - O arquivo existe e possui uma estrutura de lista de dicionários.
+# - Cada item do JSON representa uma reserva com os campos esperados.
 # Interface com o Usuário:
-# - Apenas imprime mensagens em caso de erro.
+# - Imprime mensagem de erro no console se ocorrer falha na leitura.
 
 def ler_todas_reservas():
     try:
@@ -31,10 +35,19 @@ def ler_todas_reservas():
 # Função: salvar_todas_reservas
 # ======================
 # Descrição:
-# Salva a lista de reservas no arquivo JSON.
+# Salva a lista de reservas no arquivo JSON em disco.
+# Acoplamento:
+# - Parâmetro:
+#     - dados (list): Lista de dicionários contendo reservas.
+# - Utiliza a biblioteca json e o caminho CAMINHO_ARQUIVO.
+# Condições de Acoplamento:
+# - Entrada: Estrutura deve ser serializável em JSON.
+# - Saída: Arquivo deve estar acessível para escrita.
+# Interface com o Usuário:
+# - Imprime mensagem de erro no console em caso de falha.
 # Retornos:
-# - 0: sucesso
-# - 1: erro ao salvar
+# - int: 0 se sucesso, 1 se erro ao salvar.
+
 def salvar_todas_reservas(dados):
     try:
         with open(CAMINHO_ARQUIVO, "w") as f:
@@ -49,9 +62,13 @@ def salvar_todas_reservas(dados):
 # Função: iniciarModuloReserva
 # ======================
 # Descrição:
-# Inicializa o módulo de reservas carregando os dados em memória.
+# Inicializa o módulo de reservas carregando os dados do arquivo JSON em memória.
+# Armazena os dados na variável global ESTRUTURA_RESERVAS.
+# Acoplamento:
+# - Depende da função ler_todas_reservas.
 # Interface com o Usuário:
-# - Exibe mensagem de inicialização.
+# - Imprime mensagem no console informando a inicialização do módulo.
+
 def iniciarModuloReserva():
     global ESTRUTURA_RESERVAS
     ESTRUTURA_RESERVAS = ler_todas_reservas()
@@ -62,23 +79,42 @@ def iniciarModuloReserva():
 # Função: obterReservas
 # ======================
 # Descrição:
-# Retorna a estrutura de reservas atualmente carregada em memória.
+# Retorna a estrutura de reservas atualmente carregada na memória.
+# Acoplamento:
+# - Depende da variável global ESTRUTURA_RESERVAS.
+# Interface com o Usuário:
+# - Não interage diretamente com o usuário.
+# Retorno:
+# - list: Cópia da lista de reservas.
+
 def obterReservas():
     global ESTRUTURA_RESERVAS
-    return ESTRUTURA_RESERVAS
+    return ESTRUTURA_RESERVAS[:]
 
 
 # ======================
 # Função: adicionarReserva
 # ======================
 # Descrição:
-# Adiciona uma nova reserva se ainda não existir uma reserva para o mesmo hotel.
+# Adiciona uma nova reserva à estrutura em memória, caso ainda não exista uma reserva
+# para o mesmo hotel. O ID da nova reserva é gerado automaticamente.
 # Acoplamento:
-# - Depende da estrutura ESTRUTURA_RESERVAS já estar carregada.
+# - Parâmetros:
+#     - hotelId (int), usuarioId (int), checkin (str), checkout (str)
+# - Acessa e modifica a variável global ESTRUTURA_RESERVAS.
+# Condições de Acoplamento:
+# - Todos os parâmetros devem estar preenchidos.
+# - A estrutura em memória deve estar carregada corretamente.
+# Hipóteses:
+# - Apenas uma reserva por hotel é permitida.
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retornos:
-# - 0: reserva já existe para o hotel
-# - ID: da nova reserva criada
-# - -1: erro nos dados
+# - int: 
+#     - -1: Dados incompletos
+#     -  0: Reserva já existente para o hotel
+#     - >0: ID da nova reserva criada
+
 def adicionarReserva(hotelId, usuarioId, checkin, checkout):
     global ESTRUTURA_RESERVAS
 
@@ -108,10 +144,20 @@ def adicionarReserva(hotelId, usuarioId, checkin, checkout):
 # Função: excluirReserva
 # ======================
 # Descrição:
-# Remove a reserva do usuário em um determinado hotel.
+# Remove a reserva associada a um usuário e hotel específicos.
+# Acoplamento:
+# - Parâmetros:
+#     - hotelId (int), usuarioId (int)
+# - Modifica a variável global ESTRUTURA_RESERVAS.
+# Condições de Acoplamento:
+# - A reserva deve existir na estrutura.
+# Interface com o Usuário:
+# - Não interage com o usuário.
 # Retornos:
-# - 0: nenhuma reserva encontrada
-# - 1: reserva removida com sucesso
+# - int:
+#     - 0: Nenhuma reserva foi encontrada para remoção.
+#     - 1: Reserva removida com sucesso.
+
 def excluirReserva(hotelId, usuarioId):
     global ESTRUTURA_RESERVAS
     lista = ESTRUTURA_RESERVAS
@@ -132,16 +178,19 @@ def excluirReserva(hotelId, usuarioId):
 # Função: listar_reservas_por_usuario
 # ======================
 # Descrição:
-# Lista todas as reservas feitas por um determinado usuário.
+# Retorna uma lista contendo todas as reservas realizadas por um determinado usuário.
+# Acoplamento:
+# - Parâmetro:
+#     - usuario_id (int)
+# - Acessa a variável global ESTRUTURA_RESERVAS.
+# Condições de Acoplamento:
+# - A estrutura deve estar corretamente carregada e conter reservas válidas.
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retorno:
-# - Lista de reservas do usuário ou lista vazia.
+# - list: Lista de reservas feitas pelo usuário.
+
 def listar_reservas_por_usuario(usuario_id):
     global ESTRUTURA_RESERVAS
     dados = ESTRUTURA_RESERVAS
     return [r for r in dados if r["usuario_id"] == usuario_id]
-
-
-
-
-
-

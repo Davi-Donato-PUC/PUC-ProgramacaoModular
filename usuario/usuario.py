@@ -1,7 +1,7 @@
-
-import json
-import atexit
-
+# =========================
+# Diretivas de Entrada
+# =========================
+# - json: Biblioteca padrão usada para leitura e escrita de arquivos JSON.
 
 import json
 
@@ -11,13 +11,18 @@ CAMINHO_ARQUIVO = "usuario/dadosUsuario.json"
 # Função: ler_todos_usuarios
 # =========================
 # Descrição:
-# Lê a lista de usuários a partir do arquivo JSON definido.
+# Lê a lista de usuários a partir do arquivo JSON no caminho CAMINHO_ARQUIVO.
+# Se ocorrer um erro durante a leitura (como arquivo inexistente ou JSON malformado),
+# retorna uma lista vazia.
 # Acoplamento:
-# - Depende da existência de um arquivo JSON válido.
+# - Depende do arquivo JSON localizado em CAMINHO_ARQUIVO.
+# - Utiliza a biblioteca padrão json.
+# Condições de Acoplamento:
+# - O arquivo deve estar acessível e conter dados válidos no formato esperado.
 # Hipóteses:
-# - O arquivo existe e contém uma lista de dicionários com chaves: 'id', 'username', 'senha'.
-# Retorno:
-# - Lista de usuários, ou [] em caso de erro de leitura.
+# - Cada item no JSON é um dicionário com as chaves: 'id', 'username' e 'senha'.
+# Interface com o Usuário:
+# - Emite mensagem de erro no console em caso de falha na leitura.
 
 def ler_todos_usuarios():
     try:
@@ -32,10 +37,19 @@ def ler_todos_usuarios():
 # Função: salvar_todos
 # =========================
 # Descrição:
-# Salva a lista de usuários no arquivo JSON.
+# Salva a lista de usuários no arquivo JSON em disco.
+# Acoplamento:
+# - Parâmetro:
+#     - dados (list): Lista de dicionários contendo usuários.
+# - Utiliza a biblioteca json.
+# Condições de Acoplamento:
+# - Entrada: Estrutura deve ser serializável em JSON.
+# - Saída: Arquivo deve estar acessível para escrita.
+# Interface com o Usuário:
+# - Emite mensagem de erro no console em caso de falha.
 # Retorno:
-# - 0: sucesso
-# - 1: erro ao salvar
+# - int: 0 para sucesso, 1 para erro ao salvar.
+
 def salvar_todos(dados):
     try:
         with open(CAMINHO_ARQUIVO, "w") as f:
@@ -50,9 +64,13 @@ def salvar_todos(dados):
 # Função: iniciarModuloUsuario
 # =========================
 # Descrição:
-# Inicializa o módulo de usuários carregando os dados em memória.
+# Inicializa a estrutura de dados de usuários carregando os dados do arquivo JSON
+# e armazenando na variável global ESTRUTURA_USUARIOS.
+# Acoplamento:
+# - Depende da função ler_todos_usuarios.
 # Interface com o Usuário:
-# - Imprime mensagem de inicialização.
+# - Exibe mensagem no console indicando a inicialização do módulo.
+
 def iniciarModuloUsuario():
     global ESTRUTURA_USUARIOS
     ESTRUTURA_USUARIOS = ler_todos_usuarios()
@@ -63,22 +81,36 @@ def iniciarModuloUsuario():
 # Função: obterUsuarios
 # =========================
 # Descrição:
-# Retorna a estrutura de usuários carregada na memória.
+# Retorna uma cópia da lista de usuários carregados em memória (ESTRUTURA_USUARIOS).
+# Acoplamento:
+# - Depende da variável global ESTRUTURA_USUARIOS.
+# Interface com o Usuário:
+# - Não interage diretamente com o usuário.
+
 def obterUsuarios():
     global ESTRUTURA_USUARIOS
-    return ESTRUTURA_USUARIOS
+    return ESTRUTURA_USUARIOS[:]
 
 
 # =========================
 # Função: adicionarUsuario
 # =========================
 # Descrição:
-# Adiciona um novo usuário à estrutura em memória.
+# Adiciona um novo usuário à estrutura em memória, gerando um ID automaticamente.
+# Acoplamento:
+# - Parâmetros:
+#     - username (str), senha (str)
+# - Acessa e modifica ESTRUTURA_USUARIOS.
+# Condições de Acoplamento:
+# - username e senha devem ser válidos e não vazios.
 # Hipóteses:
-# - `username` não pode estar duplicado (não verificado aqui).
+# - O controle de unicidade do username será feito externamente (não validado aqui).
+# Interface com o Usuário:
+# - Não interage com o usuário.
 # Retorno:
-# - Dicionário com os dados do novo usuário.
-# - None: se dados forem inválidos.
+# - dict: Dicionário do novo usuário criado.
+# - None: Em caso de dados inválidos.
+
 def adicionarUsuario(username, senha):
     global ESTRUTURA_USUARIOS
 
@@ -96,10 +128,17 @@ def adicionarUsuario(username, senha):
 # Função: buscarUsuario
 # =========================
 # Descrição:
-# Busca usuários por ID (int) ou por username (str).
+# Busca um usuário na estrutura em memória, com base no `criterio`.
+# O critério pode ser o ID (int) ou o nome de usuário (str).
+# Acoplamento:
+# - Acessa ESTRUTURA_USUARIOS.
+# Condições de Acoplamento:
+# - A lista de usuários deve estar carregada e bem formada.
+# Interface com o Usuário:
+# - Não interage diretamente.
 # Retorno:
-# - Lista com os usuários encontrados (máximo 1 item).
-# - Lista vazia: se nenhum encontrado.
+# - list: Lista com um usuário correspondente (ou vazia se não houver).
+
 def buscarUsuario(criterio):
     global ESTRUTURA_USUARIOS
     dados = ESTRUTURA_USUARIOS
@@ -117,11 +156,19 @@ def buscarUsuario(criterio):
 # Função: validarUsuario
 # =========================
 # Descrição:
-# Valida um par de `username` e `senha` com os dados existentes.
-# Retornos:
-# - 'Senha correta'      : credenciais válidas
-# - 'Senha incorreta'    : username existe mas senha não bate
-# - 'Usuário não cadastrado' : username não encontrado
+# Valida se o par `username` e `senha` corresponde a algum usuário armazenado.
+# Acoplamento:
+# - Acessa ESTRUTURA_USUARIOS.
+# Condições de Acoplamento:
+# - A estrutura deve estar carregada corretamente.
+# Interface com o Usuário:
+# - Não interage diretamente.
+# Retorno:
+# - str:
+#     - 'Senha correta'         : se as credenciais forem válidas.
+#     - 'Senha incorreta'       : se o username existir mas a senha não coincidir.
+#     - 'Usuário não cadastrado': se o username não for encontrado.
+
 def validarUsuario(username, senha):
     global ESTRUTURA_USUARIOS
     users = ESTRUTURA_USUARIOS
@@ -133,10 +180,6 @@ def validarUsuario(username, senha):
             else:
                 return 'Senha incorreta'
     return 'Usuário não cadastrado'
-
-
-
-
 
 
 
