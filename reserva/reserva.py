@@ -126,6 +126,7 @@ def adicionarReserva(hotelId, usuarioId, checkin, checkout):
 
     for dado in dados:
         if hotelId == dado['hotel_id']:
+            print('ERRO AQUI')
             return 0  # Já reservado
 
     novo = {

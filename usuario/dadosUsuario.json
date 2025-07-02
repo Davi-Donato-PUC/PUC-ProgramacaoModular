@@ -18,5 +18,10 @@
     "id": 4,
     "username": "Davi Donato",
     "senha": "abacate"
+  },
+  {
+    "id": 5,
+    "username": "DaviDonato123",
+    "senha": "123"
   }
 ]
