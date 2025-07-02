@@ -20,7 +20,7 @@ def reservasView(request) :
 
 
 def adicionarReservaView(request, hotel_id) :
-
+    print('OI')
     checkin_str = request.POST.get('checkin')
     checkout_str = request.POST.get('checkout')
     print(checkin_str)
